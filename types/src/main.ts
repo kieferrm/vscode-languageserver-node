@@ -205,6 +205,13 @@ export interface Diagnostic {
 	 * The diagnostic's message.
 	 */
 	message: string;
+
+	relatedInfo?: { [uri: string]: DiagnosticRelatedInfo[] };
+}
+
+export interface DiagnosticRelatedInfo {
+	range: Range,
+	message: string
 }
 
 /**
@@ -228,6 +235,16 @@ export namespace Diagnostic {
 		}
 		return result;
 	}
+
+	export function setRelatedInfo(diagnostic: Diagnostic, uri: string, relatedInfo: DiagnosticRelatedInfo[]) {
+		if(Is.defined(uri) && Is.defined(relatedInfo) && relatedInfo.length > 0) {
+			if (!Is.defined(diagnostic.relatedInfo)) {
+				diagnostic.relatedInfo = {};
+			}
+			diagnostic.relatedInfo![uri] = relatedInfo;
+		}
+	}
+	
 	/**
 	 * Checks whether the given literal conforms to the [Diagnostic](#Diagnostic) interface.
 	 */
