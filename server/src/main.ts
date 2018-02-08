@@ -1564,7 +1564,7 @@ function _createConnection<PConsole = _, PTracer = _, PTelemetry = _, PClient = 
 		sendRequest: <R>(type: string | RPCMessageType, ...params: any[]): Thenable<R> => connection.sendRequest(Is.string(type) ? type : type.method, ...params),
 		onRequest: <R, E>(type: string | RPCMessageType | StarRequestHandler, handler?: GenericRequestHandler<R, E>): void => (connection as any).onRequest(type, handler),
 
-		sendNotification: (type: string | RPCMessageType, ...params: any[]): void => connection.sendNotification(Is.string(type) ? type : type.method, ...params),
+		sendNotification: (type: string | RPCMessageType, ...params: any[]): void => connection.sendNotification((Is.string(type) ? type : type.method) as any, ...params),
 		onNotification: (type: string | RPCMessageType | StarNotificationHandler, handler?: GenericNotificationHandler): void => (connection as any).onNotification(type, handler),
 
 		onInitialize: (handler) => initializeHandler = handler,
