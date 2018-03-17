@@ -1612,6 +1612,11 @@ function _createConnection<PConsole = _, PTracer = _, PTelemetry = _, PClient = 
 		onWillSaveTextDocumentWaitUntil: (handler) => connection.onRequest(WillSaveTextDocumentWaitUntilRequest.type, handler),
 		onDidSaveTextDocument: (handler) => connection.onNotification(DidSaveTextDocumentNotification.type, handler),
 
+		// @kieferrm
+		// Should we have a "DiagnosticsPusher" that's called in this method?
+		// should the pusher use the client capabilities to decide whether to sanitize params?
+		// The pusher would be quite similar to a remote, but the pusher could not fill in the server capabilities
+		// We can also opt for doing nothing. Then it's up to the server to do the right thing when the client says that it can't handle related info.
 		sendDiagnostics: (params) => connection.sendNotification(PublishDiagnosticsNotification.type, params),
 
 		onHover: (handler) => connection.onRequest(HoverRequest.type, handler),
@@ -1641,6 +1646,9 @@ function _createConnection<PConsole = _, PTracer = _, PTelemetry = _, PClient = 
 		dispose: () => connection.dispose()
 	};
 	for (let remote of allRemotes) {
+		// @kieferrm
+		// the protocol connection has properties for each of the remotes
+		// why is it circular?
 		remote.attach(protocolConnection);
 	}
 
@@ -1729,6 +1737,8 @@ function _createConnection<PConsole = _, PTracer = _, PTelemetry = _, PClient = 
 
 // Export the protocol currently in proposed state.
 
+// @kieferrm
+// is this used anywhere? I see that createConnection can be controlled with it, but I don't see anyone doing it?
 export namespace ProposedFeatures {
 	export const all: Features<_, _, _, _, _, _> = {
 		__brand: 'features',

@@ -2904,6 +2904,8 @@ export abstract class BaseLanguageClient {
 		let result: ClientCapabilities = {};
 		ensure(result, 'workspace')!.applyEdit = true;
 		ensure(ensure(result, 'workspace')!, 'workspaceEdit')!.documentChanges = true;
+		// @kieferrm 
+		result.diagnosticRelatedInfo = false; // change to true once VS Code's API supports it
 		for (let feature of this._features) {
 			feature.fillClientCapabilities(result);
 		}

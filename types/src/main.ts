@@ -206,6 +206,7 @@ export interface Diagnostic {
 	 */
 	message: string;
 
+	// @kieferrm
 	relatedInfo?: { [uri: string]: DiagnosticRelatedInfo[] };
 }
 
@@ -236,6 +237,7 @@ export namespace Diagnostic {
 		return result;
 	}
 
+	// @kieferrm
 	export function setRelatedInfo(diagnostic: Diagnostic, uri: string, relatedInfo: DiagnosticRelatedInfo[]) {
 		if(Is.defined(uri) && Is.defined(relatedInfo) && relatedInfo.length > 0) {
 			if (!Is.defined(diagnostic.relatedInfo)) {
@@ -244,7 +246,7 @@ export namespace Diagnostic {
 			diagnostic.relatedInfo![uri] = relatedInfo;
 		}
 	}
-	
+
 	/**
 	 * Checks whether the given literal conforms to the [Diagnostic](#Diagnostic) interface.
 	 */
