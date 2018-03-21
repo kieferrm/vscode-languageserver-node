@@ -502,11 +502,10 @@ export interface _ClientCapabilities {
 	 */
 	textDocument?: TextDocumentClientCapabilities;
 
-	// @kieferrm
 	/**
-	 * Whether the client supports diagnostics with related info.
+	 * Whether the client supports diagnostics with related information.
 	 */
-	diagnosticRelatedInfo?: boolean;
+	diagnosticRelatedInformation?: boolean;
 
 	/**
 	 * Experimental client capabilities.

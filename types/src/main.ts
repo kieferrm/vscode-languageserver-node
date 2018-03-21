@@ -206,12 +206,14 @@ export interface Diagnostic {
 	 */
 	message: string;
 
-	// @kieferrm
-	relatedInfo?: { [uri: string]: DiagnosticRelatedInfo[] };
+	/**
+	 * Array of information related to this diagnostic.
+	 */
+	relatedInformation?: DiagnosticRelatedInformation[];
 }
 
-export interface DiagnosticRelatedInfo {
-	range: Range,
+export interface DiagnosticRelatedInformation {
+	location: Location,
 	message: string
 }
 
@@ -223,7 +225,7 @@ export namespace Diagnostic {
 	/**
 	 * Creates a new Diagnostic literal.
 	 */
-	export function create(range: Range, message: string, severity?: DiagnosticSeverity, code?: number | string, source?: string): Diagnostic {
+	export function create(range: Range, message: string, severity?: DiagnosticSeverity, code?: number | string, source?: string, relatedInformation?: DiagnosticRelatedInformation[]): Diagnostic {
 		let result: Diagnostic = { range, message };
 		if (Is.defined(severity)) {
 			result.severity = severity;
@@ -234,17 +236,10 @@ export namespace Diagnostic {
 		if (Is.defined(source)) {
 			result.source = source;
 		}
-		return result;
-	}
-
-	// @kieferrm
-	export function setRelatedInfo(diagnostic: Diagnostic, uri: string, relatedInfo: DiagnosticRelatedInfo[]) {
-		if(Is.defined(uri) && Is.defined(relatedInfo) && relatedInfo.length > 0) {
-			if (!Is.defined(diagnostic.relatedInfo)) {
-				diagnostic.relatedInfo = {};
-			}
-			diagnostic.relatedInfo![uri] = relatedInfo;
+		if (Is.defined(relatedInformation)) {
+			result.relatedInformation = relatedInformation;
 		}
+		return result;
 	}
 
 	/**
@@ -257,7 +252,15 @@ export namespace Diagnostic {
 			&& Is.string(candidate.message)
 			&& (Is.number(candidate.severity) || Is.undefined(candidate.severity))
 			&& (Is.number(candidate.code) || Is.string(candidate.code) || Is.undefined(candidate.code))
-			&& (Is.string(candidate.source) || Is.undefined(candidate.source));
+			&& (Is.string(candidate.source) || Is.undefined(candidate.source))
+			&& (Is.typedArray<DiagnosticRelatedInformation>(candidate.relatedInformation,isRelatedInformation) || Is.undefined(candidate.relatedInformation));
+	}
+
+	function isRelatedInformation(value: any): value is DiagnosticRelatedInformation {
+		let candidate = value as DiagnosticRelatedInformation;
+		return Is.defined(candidate)
+			&& Location.is(candidate.location)
+			&& Is.string(candidate.message);
 	}
 }
 
